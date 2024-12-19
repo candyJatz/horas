@@ -1,25 +1,18 @@
-interface Registro {
-    fecha: string;
-    entrada: string;
-    salida: string;
-    horasRealizadas: number;
-}
+const HORAS_INICIALES = 480;
+let registros = [];
 
-let registros: Registro[] = [];
-const HORAS_INICIALES: number = 480;
-
-function calcularHorasTrabajadas(entrada: string, salida: string): number {
+function calcularHorasTrabajadas(entrada, salida) {
     const [horasEntrada, minutosEntrada] = entrada.split(':').map(Number);
     const [horasSalida, minutosSalida] = salida.split(':').map(Number);
 
-    const totalMinutosEntrada: number = horasEntrada * 60 + minutosEntrada;
-    const totalMinutosSalida: number = horasSalida * 60 + minutosSalida;
+    const totalMinutosEntrada = horasEntrada * 60 + minutosEntrada;
+    const totalMinutosSalida = horasSalida * 60 + minutosSalida;
 
     return Number(((totalMinutosSalida - totalMinutosEntrada) / 60).toFixed(2));
 }
 
-function agregarRegistroATabla(registro: Registro): void {
-    const tbody = document.getElementById('registrosBody') as HTMLTableSectionElement;
+function agregarRegistroATabla(registro) {
+    const tbody = document.getElementById('registrosBody');
     const tr = document.createElement('tr');
 
     const horasRestantes = calcularHorasRestantes();
@@ -34,12 +27,12 @@ function agregarRegistroATabla(registro: Registro): void {
     tbody.appendChild(tr);
 }
 
-function calcularHorasRestantes(): number {
+function calcularHorasRestantes() {
     const totalHorasTrabajadas = registros.reduce((total, registro) => total + registro.horasRealizadas, 0);
     return HORAS_INICIALES - totalHorasTrabajadas;
 }
 
-function actualizarResumen(): void {
+function actualizarResumen() {
     const totalHoras = registros.reduce((total, registro) => total + registro.horasRealizadas, 0);
     const horasRestantes = HORAS_INICIALES - totalHoras;
 
@@ -53,19 +46,19 @@ function actualizarResumen(): void {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const horasForm = document.getElementById('horasForm') as HTMLFormElement;
+    const horasForm = document.getElementById('horasForm');
     if (horasForm) {
-        horasForm.addEventListener('submit', function(e: Event) {
+        horasForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const fechaElement = document.getElementById('fecha') as HTMLInputElement;
-            const entradaElement = document.getElementById('entrada') as HTMLInputElement;
-            const salidaElement = document.getElementById('salida') as HTMLInputElement;
+            const fechaElement = document.getElementById('fecha');
+            const entradaElement = document.getElementById('entrada');
+            const salidaElement = document.getElementById('salida');
             const fecha = fechaElement.value;
             const entrada = entradaElement.value;
             const salida = salidaElement.value;
             if (fecha && entrada && salida) {
                 const horasRealizadas = calcularHorasTrabajadas(entrada, salida);
-                const nuevoRegistro: Registro = { fecha, entrada, salida, horasRealizadas };
+                const nuevoRegistro = { fecha, entrada, salida, horasRealizadas };
                 registros.push(nuevoRegistro);
                 agregarRegistroATabla(nuevoRegistro);
                 actualizarResumen();
@@ -76,5 +69,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-
